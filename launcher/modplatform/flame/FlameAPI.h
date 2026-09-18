@@ -74,6 +74,11 @@ class FlameAPI final : public ResourceAPI {
             case ModPlatform::LegacyFabric:
             case ModPlatform::Ornithe:
             case ModPlatform::Rift:
+            case ModPlatform::Cleanroom:
+            case ModPlatform::NilLoader:
+            case ModPlatform::CursedFabric:
+            case ModPlatform::FoxLoader:
+            case ModPlatform::FishModLoader:
             case ModPlatform::None:
                 break;  // not supported
         }
