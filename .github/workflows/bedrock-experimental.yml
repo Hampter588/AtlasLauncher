@@ -22,15 +22,6 @@ jobs:
         with:
           submodules: true
 
-      - name: Checkout BedrockLauncher backend
-        uses: actions/checkout@v7
-        with:
-          repository: BedrockLauncher/BedrockLauncher
-          ref: lite
-          path: external/BedrockLauncher
-          lfs: true
-          submodules: recursive
-
       - name: Setup Atlas dependencies
         id: setup-dependencies
         uses: ./.github/actions/setup-dependencies
@@ -39,11 +30,6 @@ jobs:
           artifact-name: Windows-MSVC-Bedrock-Experimental
           vcvars-arch: amd64
           qt-version: 6.11.2
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: 8.0.x
 
       - name: Configure Atlas
         shell: bash
@@ -65,15 +51,6 @@ jobs:
           cmake --install build --config "$BUILD_TYPE" --prefix install
           cmake --install build --config "$BUILD_TYPE" --prefix install --component portable
 
-      - name: Build BedrockLauncher backend
-        shell: pwsh
-        run: |
-          dotnet publish external/BedrockLauncher/BedrockLauncher/BedrockLauncher.csproj `
-            --configuration Release `
-            --runtime win-x64 `
-            --self-contained false `
-            --output install/bedrock
-
       - name: Add experimental notice
         shell: pwsh
         run: |
@@ -84,8 +61,7 @@ jobs:
           Back up Bedrock worlds before installing or switching game versions.
           Minecraft for Windows ownership or an eligible Game Pass subscription is required.
 
-          Bedrock backend source: https://github.com/BedrockLauncher/BedrockLauncher
-          Both projects are distributed under GPL-3.0.
+          Bedrock detection and launching are implemented natively in Atlas Launcher.
           "@ | Set-Content -Path install/BEDROCK-EXPERIMENTAL.txt
 
       - name: Upload experimental artifact

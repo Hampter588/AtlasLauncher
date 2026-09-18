@@ -19,6 +19,16 @@ class BedrockPage final : public QWidget, public BasePage {
     bool shouldDisplay() const override;
     void retranslate() override {}
 
+    void openedImpl() override;
+
    private slots:
-    void launchBackend();
+    void refreshInstallations();
+    void processDetectionResult(int exitCode);
+    void launchSelected();
+
+   private:
+    class QLabel* m_status = nullptr;
+    class QTableWidget* m_installations = nullptr;
+    class QPushButton* m_launchButton = nullptr;
+    class QProcess* m_detector = nullptr;
 };
