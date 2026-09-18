@@ -1,0 +1,97 @@
+name: Bedrock Experimental (Windows)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Build Windows x64 experimental artifact
+    runs-on: windows-2022
+    env:
+      ARTIFACT_NAME: Windows-MSVC-Bedrock-Experimental
+      BUILD_PLATFORM: experimental
+      BUILD_TYPE: Release
+      CMAKE_PRESET: windows_msvc
+    steps:
+      - name: Checkout Atlas Launcher
+        uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - name: Checkout BedrockLauncher backend
+        uses: actions/checkout@v7
+        with:
+          repository: BedrockLauncher/BedrockLauncher
+          ref: lite
+          path: external/BedrockLauncher
+          lfs: true
+          submodules: recursive
+
+      - name: Setup Atlas dependencies
+        id: setup-dependencies
+        uses: ./.github/actions/setup-dependencies
+        with:
+          build-type: Release
+          artifact-name: Windows-MSVC-Bedrock-Experimental
+          vcvars-arch: amd64
+          qt-version: 6.11.2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Configure Atlas
+        shell: bash
+        run: |
+          cmake --preset "$CMAKE_PRESET" \
+            -D VCPKG_HOST_TRIPLET="$VCPKG_TRIPLET" \
+            -D VCPKG_TARGET_TRIPLET="$VCPKG_TRIPLET" \
+            -D ATLAS_ENABLE_BEDROCK_EXPERIMENTAL=ON
+
+      - name: Build and test Atlas
+        shell: bash
+        run: |
+          cmake --build --preset "$CMAKE_PRESET" --config "$BUILD_TYPE"
+          ctest --preset "$CMAKE_PRESET" --build-config "$BUILD_TYPE"
+
+      - name: Install Atlas portable build
+        shell: bash
+        run: |
+          cmake --install build --config "$BUILD_TYPE" --prefix install
+          cmake --install build --config "$BUILD_TYPE" --prefix install --component portable
+
+      - name: Build BedrockLauncher backend
+        shell: pwsh
+        run: |
+          dotnet publish external/BedrockLauncher/BedrockLauncher/BedrockLauncher.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained false `
+            --output install/bedrock
+
+      - name: Add experimental notice
+        shell: pwsh
+        run: |
+          @"
+          Atlas Launcher — Bedrock Experimental
+
+          Windows x64 only. This artifact is intentionally not a stable release.
+          Back up Bedrock worlds before installing or switching game versions.
+          Minecraft for Windows ownership or an eligible Game Pass subscription is required.
+
+          Bedrock backend source: https://github.com/BedrockLauncher/BedrockLauncher
+          Both projects are distributed under GPL-3.0.
+          "@ | Set-Content -Path install/BEDROCK-EXPERIMENTAL.txt
+
+      - name: Upload experimental artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: AtlasLauncher-Windows-x64-Bedrock-Experimental-${{ github.sha }}
+          path: install/**
+          if-no-files-found: error
+          retention-days: 14

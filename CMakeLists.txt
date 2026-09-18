@@ -382,6 +382,10 @@ include(ECMQtDeclareLoggingCategory)
 ####################################### Program Info #######################################
 
 set(Launcher_APP_BINARY_NAME "atlaslauncher" CACHE STRING "Name of the Launcher binary")
+option(ATLAS_ENABLE_BEDROCK_EXPERIMENTAL "Enable the Windows-only experimental Bedrock backend" OFF)
+if(ATLAS_ENABLE_BEDROCK_EXPERIMENTAL AND NOT WIN32)
+    message(FATAL_ERROR "ATLAS_ENABLE_BEDROCK_EXPERIMENTAL is only supported on Windows")
+endif()
 add_subdirectory(program_info)
 
 ####################################### Install layout #######################################

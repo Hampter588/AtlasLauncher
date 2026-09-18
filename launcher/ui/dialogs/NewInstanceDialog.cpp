@@ -59,6 +59,7 @@
 #include <utility>
 
 #include "ui/pages/modplatform/CustomPage.h"
+#include "ui/pages/modplatform/BedrockPage.h"
 #include "ui/pages/modplatform/ImportPage.h"
 #include "ui/pages/modplatform/atlauncher/AtlPage.h"
 #include "ui/pages/modplatform/flame/FlamePage.h"
@@ -193,6 +194,9 @@ QList<BasePage*> NewInstanceDialog::getPages()
     m_importPage = new ImportPage(this);
 
     pages.append(new CustomPage(this));
+#ifdef ATLAS_ENABLE_BEDROCK_EXPERIMENTAL
+    pages.append(new BedrockPage(this));
+#endif
     pages.append(m_importPage);
     pages.append(new AtlPage(this));
     if (APPLICATION->capabilities() & Application::SupportsFlame) {

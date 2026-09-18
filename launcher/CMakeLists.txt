@@ -943,6 +943,8 @@ SET(LAUNCHER_SOURCES
     # GUI - platform pages
     ui/pages/modplatform/CustomPage.cpp
     ui/pages/modplatform/CustomPage.h
+    ui/pages/modplatform/BedrockPage.cpp
+    ui/pages/modplatform/BedrockPage.h
 
     ui/pages/modplatform/ResourcePage.cpp
     ui/pages/modplatform/ResourcePage.h
@@ -1233,6 +1235,9 @@ endif()
 add_library(Launcher_logic STATIC ${LOGIC_SOURCES} ${LAUNCHER_SOURCES} ${LAUNCHER_RESOURCES})
 target_include_directories(Launcher_logic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(Launcher_logic PUBLIC LAUNCHER_APPLICATION)
+if(ATLAS_ENABLE_BEDROCK_EXPERIMENTAL)
+    target_compile_definitions(Launcher_logic PUBLIC ATLAS_ENABLE_BEDROCK_EXPERIMENTAL)
+endif()
 
 if(${Launcher_USE_PCH})
     target_precompile_headers(Launcher_logic PRIVATE ${PRECOMPILED_HEADERS})
