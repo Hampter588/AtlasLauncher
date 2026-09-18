@@ -994,9 +994,9 @@ void PrismUpdaterApp::backupAppDir()
         } else {  // windows by process of elimination
             file_list.append({
                 "jars",
-                "prismlauncher.exe",
-                "prismlauncher_filelink.exe",
-                "prismlauncher_updater.exe",
+                "atlaslauncher.exe",
+                "atlaslauncher_filelink.exe",
+                "atlaslauncher_updater.exe",
                 "qtlogging.ini",
                 "imageformats",
                 "iconengines",
