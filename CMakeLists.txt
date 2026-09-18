@@ -206,7 +206,7 @@ set(Launcher_UPDATER_GITHUB_REPO "https://github.com/Hampter588/AtlasLauncher" C
 set(Launcher_BUILD_ARTIFACT "" CACHE STRING "Artifact name to help the updater identify valid artifacts.")
 
 # The metadata server
-set(Launcher_META_URL "https://hampter588.github.io/AtlasMeta/v1/" CACHE STRING "URL to fetch Atlas metadata with Omniarchive versions from.")
+set(Launcher_META_URL "https://raw.githubusercontent.com/Hampter588/AtlasMeta/main/v1/" CACHE STRING "URL to fetch Atlas metadata with Omniarchive versions from.")
 
 # Imgur API Client ID
 set(Launcher_IMGUR_CLIENT_ID "5b97b0713fba4a3" CACHE STRING "Client ID you can get from Imgur when you register an application")
