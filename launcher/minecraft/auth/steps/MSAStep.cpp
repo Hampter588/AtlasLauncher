@@ -114,7 +114,13 @@ class LoggingOAuthHttpServerReplyHandler final : public QOAuthHttpServerReplyHan
 MSAStep::MSAStep(AccountData* data, bool silent) : AuthStep(data), m_silent(silent)
 {
     m_clientId = APPLICATION->getMSAClientID();
-    if (QCoreApplication::applicationFilePath().startsWith("/tmp/.mount_") || APPLICATION->isPortable() || !isSchemeHandlerRegistered())
+    // Prism's Microsoft application registration only allows Prism's custom
+    // URI scheme. Rebranded builds must use the registered loopback flow;
+    // sending atlaslauncher:// as Prism's client ID produces an invalid
+    // redirect_uri error before the user can sign in.
+    if (BuildConfig.LAUNCHER_APP_BINARY_NAME != "prismlauncher" ||
+        QCoreApplication::applicationFilePath().startsWith("/tmp/.mount_") || APPLICATION->isPortable() ||
+        !isSchemeHandlerRegistered())
 
     {
         auto replyHandler = new LoggingOAuthHttpServerReplyHandler(this);
